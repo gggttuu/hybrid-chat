@@ -1,154 +1,103 @@
-Hybrid Chat 作业（Web + Node + Android WebView）
+# Hybrid Chat 作业（Web + Node + Android WebView）
 
-这是一个完整的 Hybrid 聊天应用 项目，包含：
+这是一个完整的 **Hybrid 聊天应用** 项目，包含：
 
-基于 Web 技术 的聊天前端（QQ 气泡风格）
-
-基于 Node.js + WebSocket 的聊天后端
-
-基于 Android WebView + JS Bridge 的 App 端封装
+- 基于 **Web 技术** 的聊天前端（QQ 气泡风格）
+- 基于 **Node.js + WebSocket** 的聊天后端
+- 基于 **Android WebView + JS Bridge** 的 App 端封装  
 
 满足作业中的基础要求 & 进阶要求，并做了一些额外优化。
 
-1. 功能总览
-✅ 基础要求对应
-
-使用 Web 技术实现聊天基础功能
-
-文本输入框、发送按钮、聊天记录展示
-
-使用 userId + roomId 标识用户/房间
-
-使用 WebSocket 实时收发消息
-
-App 端集成 WebView + 原生能力
-
-Android 使用 WebView 加载 Web 聊天页面
-
-通过 JavascriptInterface 暴露原生能力给 H5：
-
-获取设备信息
-
-申请麦克风 / 摄像头权限
-
-发送 App 本地通知（通知栏）
-
-Server 端（Node.js）实现消息收发
-
-使用 Express + ws 搭建本地服务
-
-提供 WebSocket 聊天通道
-
-提供 HTTP 接口：房间管理 / 历史记录 / 搜索 / 文件上传
-
-✅ 进阶要求对应
-
-音频 / 视频发送（使用本地文件）
-
-前端通过 <input type="file"> 选择本地文件
-
-后端 /upload 接口接收文件，支持：
-
-图片（image/*）
-
-音频（audio/*）
-
-视频（video/*）
-
-其他文件（file）
-
-多人群聊
-
-使用 roomId 区分不同房间
-
-同一房间内所有用户实时收发消息
-
-房间管理（开房间 / 密码 / 人数上限 / 群主）
-
-第一个人可以“开房间”，设置：
-
-房间 ID
-
-群主（ownerId）
-
-密码（可选）
-
-最大人数
-
-其他人必须输入 正确房间密码 才能加入
-
-聊天记录懒加载
-
-不自动加载历史
-
-点击“加载历史”按钮，按时间倒序分页向上加载
-
-聊天记录持久化存储 & 可追溯
-
-消息保存在 server/messages.json 中
-
-提供 /messages 接口按时间分页获取
-
-提供 /messages/search 接口按关键字搜索
-
-其他创意功能
-
-QQ 风格对话气泡布局：
-
-自己的消息：绿色气泡，右对齐
-
-别人的消息：白色气泡，左对齐
-
-在线人数显示（房间内连接数）
-
-输入法 emoji 按钮
-
-Android 端支持选择文件（通过系统文件选择器）
-
-Android 端本地通知（消息提醒）
-
-Web 端使用 :smile: 等短码自动替换为 emoji
-
-2. 技术栈
-Web 前端（/web）
-
-原生 HTML5 / CSS3 / JavaScript
-
-WebSocket（浏览器内置）
-
-简单 Media 标签（<img> / <audio> / <video>）
-
-Server 后端（/server）
-
-Node.js (推荐 ≥ 16)
-
-Express
- —— HTTP 服务
-
-ws
- —— WebSocket 服务
-
-multer
- —— 文件上传
-
-持久化：messages.json 文件
-
-Android App（/android-app）
-
-Kotlin
-
-WebView
-
-JavascriptInterface（JS 与原生交互）
-
-NotificationCompat（本地通知）
-
-权限管理（相机 / 麦克风 / 通知）
-
-3. 项目目录结构
-
-下文默认项目根目录为 hybrid-chat（实际仓库名可以不同）
-
+---
+
+## 1. 功能总览
+
+### ✅ 基础要求对应
+
+1. **使用 Web 技术实现聊天基础功能**
+   - 文本输入框、发送按钮、聊天记录展示
+   - 使用 `userId + roomId` 标识用户/房间
+   - 使用 **WebSocket** 实时收发消息
+2. **App 端集成 WebView + 原生能力**
+   - Android 使用 WebView 加载 Web 聊天页面
+   - 通过 `JavascriptInterface` 暴露原生能力给 H5：
+     - 获取设备信息
+     - 申请麦克风 / 摄像头权限
+     - 发送 App 本地通知（通知栏）
+3. **Server 端（Node.js）实现消息收发**
+   - 使用 `Express + ws` 搭建本地服务
+   - 提供 WebSocket 聊天通道
+   - 提供 HTTP 接口：房间管理 / 历史记录 / 搜索 / 文件上传
+
+### ✅ 进阶要求对应
+
+- **音频 / 视频发送（使用本地文件）**
+  - 前端通过 `<input type="file">` 选择本地文件
+  - 后端 `/upload` 接口接收文件，支持：
+    - 图片（image/*）
+    - 音频（audio/*）
+    - 视频（video/*）
+    - 其他文件（file）
+- **多人群聊**
+  - 使用 `roomId` 区分不同房间
+  - 同一房间内所有用户实时收发消息
+- **房间管理（开房间 / 密码 / 人数上限 / 群主）**
+  - 第一个人可以“开房间”，设置：
+    - 房间 ID
+    - 群主（ownerId）
+    - 密码（可选）
+    - 最大人数
+  - 其他人必须输入 **正确房间密码** 才能加入
+- **聊天记录懒加载**
+  - 不自动加载历史
+  - 点击“加载历史”按钮，按时间倒序分页向上加载
+- **聊天记录持久化存储 & 可追溯**
+  - 消息保存在 `server/messages.json` 中
+  - 提供 `/messages` 接口按时间分页获取
+  - 提供 `/messages/search` 接口按关键字搜索
+- **其他创意功能**
+  - QQ 风格对话气泡布局：
+    - 自己的消息：绿色气泡，右对齐
+    - 别人的消息：白色气泡，左对齐
+  - 在线人数显示（房间内连接数）
+  - 输入法 emoji 按钮
+  - Android 端支持选择文件（通过系统文件选择器）
+  - Android 端本地通知（消息提醒）  
+  - Web 端使用 `:smile:` 等短码自动替换为 emoji
+
+---
+
+## 2. 技术栈
+
+### Web 前端（`/web`）
+
+- 原生 HTML5 / CSS3 / JavaScript
+- WebSocket（浏览器内置）
+- 简单 Media 标签（`<img> / <audio> / <video>`）
+
+### Server 后端（`/server`）
+
+- Node.js (推荐 ≥ 16)
+- Express —— HTTP 服务
+- ws —— WebSocket 服务
+- multer —— 文件上传
+- 持久化：`messages.json` 文件
+
+### Android App（`/android-app`）
+
+- Kotlin
+- WebView
+- `JavascriptInterface`（JS 与原生交互）
+- NotificationCompat（本地通知）
+- 权限管理（相机 / 麦克风 / 通知）
+
+---
+
+## 3. 项目目录结构
+
+> 下文默认项目根目录为 `hybrid-chat`（实际仓库名可以不同）
+
+```text
 hybrid-chat/
 ├── server/                # Node.js 服务
 │   ├── server.js          # 主服务代码（HTTP + WebSocket）
@@ -167,12 +116,12 @@ hybrid-chat/
     │       └── res/layout/activity_main.xml
     ├── build.gradle
     └── ...
-
-
 关键点：server 和 web 是并列目录，server.js 里通过 ../web 映射静态资源。
 
 4. 快速启动（TL;DR）
 4.1 启动后端 + Web
+bash
+复制代码
 # 1. 进入 server 目录
 cd server
 
@@ -181,39 +130,35 @@ npm install
 
 # 3. 启动服务
 node server.js
-
-
 启动成功后，终端会输出类似：
 
+bash
+复制代码
 🚀 HTTP server listening on http://localhost:3000
-
-
 然后在浏览器中访问：
 
+text
+复制代码
 http://localhost:3000/index.html
-
-
 就能看到 Web 版本的聊天页面。
 
 4.2 在 Android 模拟器里运行 App
-
 确保 server 已在本机运行：node server.js
 
 用 Android Studio 打开 android-app/ 目录
 
 找到 MainActivity.kt，确认 CHAT_URL 如下：
 
+kotlin
+复制代码
 // 模拟器访问 PC 本机地址（固定写法）
 private const val CHAT_URL = "http://10.0.2.2:3000/index.html"
-
-
 选择一个模拟器（或新建 Pixel / API 30+）
 
 点击 Run ▶️
-即可在模拟器中看到与 Web 一样的聊天界面
+即可在模拟器中看到与 Web 一样的聊天界面。
 
 4.3 在真机上运行 App（同一 Wi-Fi）
-
 确保手机和电脑在 同一个局域网 Wi-Fi（比如都连家里路由器）
 
 在电脑上查 IP，如：192.168.0.10
@@ -222,67 +167,66 @@ private const val CHAT_URL = "http://10.0.2.2:3000/index.html"
 
 在 MainActivity.kt 中改为：
 
+kotlin
+复制代码
 // 真机访问 PC，本机 IP 请改成自己的
 private const val CHAT_URL = "http://192.168.0.10:3000/index.html"
-
-
 打开安卓手机开发者模式 + USB 调试
 
 用 Android Studio 选择真机运行
-即可在手机里访问电脑上的 Node 服务
+即可在手机里访问电脑上的 Node 服务。
 
 5. 后端 server 详细说明
 5.1 静态资源映射
-
 server/server.js 中：
 
+js
+复制代码
 const WEB_DIR = path.join(__dirname, '..', 'web');
 app.use(express.static(WEB_DIR));                // 映射 web 目录为静态资源
 app.use('/uploads', express.static(UPLOAD_DIR)); // 映射上传文件
 app.get('/', (req, res) => {
   res.sendFile(path.join(WEB_DIR, 'index.html'));
 });
-
-
 访问 /index.html 或 / 会返回 web/index.html
 
 前端中的 /uploads/xxx 路径会从 server/uploads 读取
 
 5.2 HTTP 接口设计
 1）文件上传：POST /upload
-
 说明：上传图片 / 音频 / 视频 / 其他文件
 
 请求体：multipart/form-data，字段名为 file
 
 返回示例：
 
+json
+复制代码
 {
   "ok": true,
   "url": "/uploads/1680000000000-test.png",
   "fileType": "image/png",
   "fileName": "test.png"
 }
-
-
 前端拿到 url 后拼成 http://host:3000 + url 用于展示或播放。
 
 2）创建房间：POST /rooms
-
 说明：创建一个房间，并指定群主 / 密码 / 最大人数
 
 请求体 JSON：
 
+json
+复制代码
 {
   "roomId": "1",
   "ownerId": "gzy",
   "password": "123456",   // 可选，空字符串表示无密码
   "maxUsers": 10          // 可选，0 或空表示不限
 }
-
-
 响应示例：
 
+json
+复制代码
 {
   "ok": true,
   "data": {
@@ -292,16 +236,15 @@ app.get('/', (req, res) => {
     "maxUsers": 10
   }
 }
-
-
 已有同名房间时会返回 400：房间已存在
 
 3）获取房间信息：GET /rooms/:roomId
-
 说明：获取房间基本信息 + 在线人数
 
 响应示例：
 
+json
+复制代码
 {
   "ok": true,
   "data": {
@@ -312,9 +255,7 @@ app.get('/', (req, res) => {
     "onlineCount": 3
   }
 }
-
 4）获取历史消息：GET /messages
-
 说明：懒加载历史记录（向上翻页）
 
 请求参数：
@@ -327,6 +268,8 @@ limit	否	每次最多条数（默认 20，最大 100）
 
 返回：
 
+json
+复制代码
 {
   "ok": true,
   "data": [
@@ -344,13 +287,10 @@ limit	否	每次最多条数（默认 20，最大 100）
     }
   ]
 }
-
-
 若 password 不正确，则返回 403 + 房间密码错误。
 前端会提示用户无法查看该房间历史。
 
 5）搜索消息：GET /messages/search
-
 说明：在指定房间内按关键字搜索
 
 请求参数：
@@ -369,22 +309,20 @@ password	否	房间密码（有密码时必填）
 发送者：from
 
 5.3 WebSocket 协议
-
 WebSocket 使用与 HTTP 相同的地址（ws://host:3000），
 前端通过 new WebSocket("ws://localhost:3000") 连接。
 
 消息格式（客户端 → 服务端）
-
 1）加入房间：
 
+json
+复制代码
 {
   "action": "join",
   "roomId": "1",
   "userId": "gzy",
   "password": "123456"
 }
-
-
 如果房间不存在：收到系统消息提示 “房间不存在，请先创建房间”
 
 密码错误：系统消息 “房间密码错误”
@@ -401,6 +339,8 @@ WebSocket 使用与 HTTP 相同的地址（ws://host:3000），
 
 2）发送聊天消息：
 
+json
+复制代码
 {
   "action": "chat",
   "roomId": "1",           // 仅用于标识，权限以 ws.roomId 为准
@@ -412,8 +352,6 @@ WebSocket 使用与 HTTP 相同的地址（ws://host:3000），
   "fileType": "",          // MIME type
   "clientMsgId": "xxxxxx"  // 客户端生成，用于状态同步
 }
-
-
 服务端会：
 
 拒绝：未成功 join 的连接发送消息（没有 ws.roomId）
@@ -423,9 +361,10 @@ WebSocket 使用与 HTTP 相同的地址（ws://host:3000），
 接受：保存到 messages.json，并广播给房间所有人
 
 消息格式（服务端 → 客户端）
-
 1）系统消息 type = "system"：
 
+json
+复制代码
 {
   "id": "xxx",
   "roomId": "1",
@@ -436,10 +375,10 @@ WebSocket 使用与 HTTP 相同的地址（ws://host:3000），
   "onlineCount": 3,
   "createdAt": 1680000000000
 }
-
-
 2）普通聊天消息 type != "system"：
 
+json
+复制代码
 {
   "id": "xxx",
   "roomId": "1",
@@ -452,12 +391,9 @@ WebSocket 使用与 HTTP 相同的地址（ws://host:3000），
   "clientMsgId": "客户端传过来的那个",
   "createdAt": 1680000000000
 }
-
-
 前端如果发现 clientMsgId 与本地 pending 消息一致，就会把“发送中…”更新为“已送达”。
 
 5.4 数据持久化
-
 所有消息都保存在 server/messages.json 中
 
 每条消息包含：
@@ -468,25 +404,23 @@ roomId / from / type / content / url / fileName / fileType / createdAt
 
 文件上传保存在 server/uploads 目录，下次重启仍可访问
 
-6. Web 前端 web 详细说明
+6. Web 前端详细说明（/web）
 6.1 启动方式（再强调一遍）
-
 Web 不需要单独起服务器，只要 Node 已经运行：
 
+bash
+复制代码
 cd server
 node server.js
-
-
 然后访问：
 
+text
+复制代码
 http://localhost:3000/index.html
-
-
 就会打开 web/index.html。
 
 6.2 页面布局 & 使用流程
 顶部房间管理区
-
 包含以下输入框 & 按钮：
 
 用户 ID：标识自己（如 gzy）
@@ -512,7 +446,6 @@ http://localhost:3000/index.html
 当前在线人数：当前在线：X 人（由 WebSocket 推送更新）
 
 搜索区
-
 输入框：关键字
 
 按钮：
@@ -522,8 +455,7 @@ http://localhost:3000/index.html
 清除搜索：退出搜索模式，清空聊天窗口，需要手动再点“加载历史”
 
 聊天消息区
-
-使用 QQ 风格气泡布局，竖直方向从上到下排列
+使用 QQ 风格气泡布局
 
 自己的消息：
 
@@ -551,20 +483,7 @@ http://localhost:3000/index.html
 
 收到服务器广播：更新为 已送达
 
-支持内容类型：
-
-文本
-
-图片（上传图片后以 <img> 显示）
-
-音频（HTML5 <audio controls>）
-
-视频（HTML5 <video controls>）
-
-普通文件（显示为可点击下载的链接）
-
 底部输入区
-
 Emoji 按钮：点击直接把 emoji 插入输入框
 
 输入框：回车发送（Enter 发送，Shift+Enter 换行）
@@ -575,14 +494,15 @@ Emoji 按钮：点击直接把 emoji 插入输入框
 
 Choose File：打开系统文件选择框（Android 端已适配）
 
-发文件(音频/视频等)：上传并以合适的形式展示（图片/音频/视频/文件）
+发文件(音频/视频等)：上传并展示
 
 6.3 Web 端与原生交互（AndroidNative）
-
 页面中可以通过 window.AndroidNative 获取到原生注入的对象（Android 端 WebView 注入）。
 
 示例：
 
+js
+复制代码
 // 1. 获取设备信息（JSON 字符串）
 if (window.AndroidNative && AndroidNative.getDeviceInfo) {
   const infoStr = AndroidNative.getDeviceInfo();
@@ -595,7 +515,6 @@ if (window.AndroidNative && AndroidNative.requestCameraAndMic) {
   AndroidNative.requestCameraAndMic();
 }
 
-// 权限结果回调
 window.onNativePermissionResult = function (granted) {
   console.log("camera+mic permission:", granted);
 };
@@ -605,7 +524,6 @@ if (window.AndroidNative && AndroidNative.requestNotificationPermission) {
   AndroidNative.requestNotificationPermission();
 }
 
-// 通知权限准备就绪回调
 window.onNotificationPermissionReady = function () {
   console.log("notification permission ready");
 };
@@ -619,16 +537,10 @@ if (window.AndroidNative && AndroidNative.showNotification) {
 if (window.AndroidNative && AndroidNative.showToast) {
   AndroidNative.showToast("这是来自 H5 的提示");
 }
-
-
-这些方法在普通浏览器中不存在，只有在 Android App 中通过 WebView 加载时才可用。
-
-7. Android App 详细说明
-
+7. Android App 详细说明（/android-app）
 Android 工程位于 android-app 目录，可直接用 Android Studio 打开。
 
 7.1 主要文件
-
 app/src/main/java/.../MainActivity.kt
 
 配置 WebView（启用 JS、DOM Storage）
@@ -654,6 +566,8 @@ app/src/main/res/layout/activity_main.xml
 顶部标题 + 下方全屏 WebView
 
 7.2 WebView 关键配置（节选）
+kotlin
+复制代码
 val settings = webView.settings
 settings.javaScriptEnabled = true
 settings.domStorageEnabled = true
@@ -678,23 +592,11 @@ webView.webChromeClient = object : WebChromeClient() {
 
 // 注入 JS Bridge
 webView.addJavascriptInterface(WebAppInterface(this), "AndroidNative")
-
-
-文件选择通过：
-
-override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-    super.onActivityResult(requestCode, resultCode, data)
-    if (requestCode == REQ_FILE_CHOOSER) {
-        val result = WebChromeClient.FileChooserParams.parseResult(resultCode, data)
-        filePathCallback?.onReceiveValue(result)
-        filePathCallback = null
-    }
-}
-
 7.3 权限与通知
-
 AndroidManifest.xml 中声明：
 
+xml
+复制代码
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.CAMERA" />
 <uses-permission android:name="android.permission.RECORD_AUDIO" />
@@ -705,8 +607,6 @@ AndroidManifest.xml 中声明：
     android:usesCleartextTraffic="true">
     ...
 </application>
-
-
 本地通知使用 NotificationCompat，通道 ID 为 chat_channel，在 MainActivity 中创建并发送。
 
 8. 作业要求对照表
@@ -722,8 +622,8 @@ Server 端使用 Node.js 提供消息接收与推送	server/server.js 使用 Exp
 进阶：聊天记录懒加载	GET /messages + “加载历史”按钮
 进阶：聊天记录持久化 & 可追溯	messages.json 持久化 + 搜索接口
 进阶：创意功能	QQ 气泡样式、在线人数显示、搜索、emoji、Android 本地通知等
-9. 常见问题 & 排错
 
+9. 常见问题 & 排错
 浏览器打开 http://localhost:3000/index.html 提示 Cannot GET /index.html
 
 确认你已经在 server 目录执行 node server.js
@@ -732,10 +632,10 @@ Server 端使用 Node.js 提供消息接收与推送	server/server.js 使用 Exp
 
 确认 server.js 里有：
 
+js
+复制代码
 const WEB_DIR = path.join(__dirname, '..', 'web');
 app.use(express.static(WEB_DIR));
-
-
 Android 模拟器白屏 / 加载不出页面
 
 确认服务器在本机跑着，浏览器能访问 http://localhost:3000/index.html
