@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="utf-8" />
+  <title>Hybrid Chat Demo</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" />
+  <style>
+    :root {
+      --bg: #f3f4f8;
+      --primary: #4f46e5;
+      --border: #e5e7eb;
+      --me: #95ec69;
+      /* 自己消息的绿色气泡 */
+      --other: #ffffff;
+      --me-text: #111827;
+      --other-text: #111827;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    /* 顶部栏 */
+    #topBar {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(135deg, #4f46e5, #6366f1);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      box-shadow: 0 2px 4px rgba(15, 23, 42, 0.15);
+    }
+
+    #topBarLeft label {
+      font-size: 13px;
+      margin-right: 4px;
+    }
+
+    #topBarLeft input {
+      border: none;
+      border-radius: 999px;
+      padding: 6px 8px;
+      font-size: 13px;
+      outline: none;
+      min-width: 60px;
+      margin-right: 4px;
+    }
+
+    #topBarLeft button {
+      border-radius: 999px;
+      border: none;
+      padding: 6px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.9);
+      color: #111827;
+      margin-right: 4px;
+      white-space: nowrap;
+    }
+
+    #topBarLeft button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.25);
+      background: #ffffff;
+    }
+
+    #topBarRight {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 2px;
+      font-size: 12px;
+    }
+
+    #roomInfo {
+      opacity: 0.9;
+    }
+
+    #onlineInfo {
+      opacity: 0.9;
+    }
+
+    /* 搜索栏 */
+    #searchBar {
+      padding: 6px 10px;
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      border-bottom: 1px solid var(--border);
+      background: #f9fafb;
+    }
+
+    #searchBar input {
+      flex: 1;
+      min-width: 0;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      font-size: 14px;
+    }
+
+    #searchBar button {
+      border-radius: 999px;
+      border: none;
+      padding: 6px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      background: #e5e7eb;
+    }
+
+    /* 聊天区域 */
+    #messages {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 10px;
+      background: radial-gradient(circle at top left, #e5e7eb 0, #f9fafb 40%, #e5e7eb 100%);
+    }
+
+    .msg-line {
+      display: flex;
+      margin-bottom: 10px;
+    }
+
+    .msg-line.me {
+      justify-content: flex-end;
+    }
+
+    .msg-line.other {
+      justify-content: flex-start;
+    }
+
+    .msg {
+      max-width: 70%;
+      padding: 8px 10px;
+      border-radius: 18px;
+      position: relative;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.18);
+      font-size: 14px;
+      line-height: 1.5;
+      word-break: break-word;
+    }
+
+    .msg.me {
+      background: var(--me);
+      color: var(--me-text);
+      border-bottom-right-radius: 4px;
+    }
+
+    .msg.other {
+      background: var(--other);
+      color: var(--other-text);
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg.me::after {
+      content: "";
+      position: absolute;
+      right: -6px;
+      bottom: 2px;
+      border-left: 6px solid var(--me);
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+    }
+
+    .msg.other::after {
+      content: "";
+      position: absolute;
+      left: -6px;
+      bottom: 2px;
+      border-right: 6px solid var(--other);
+      border-top: 6px solid transparent;
+      border-bottom: 6px solid transparent;
+    }
+
+    .msg .sender {
+      display: block;
+      font-size: 12px;
+      opacity: 0.7;
+      margin-bottom: 2px;
+    }
+
+    .msg .content {
+      white-space: pre-wrap;
+    }
+
+    .msg img,
+    .msg audio,
+    .msg video {
+      max-width: 100%;
+      border-radius: 10px;
+      margin-top: 4px;
+    }
+
+    .meta-row {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 6px;
+      margin-top: 4px;
+      font-size: 11px;
+      opacity: 0.75;
+    }
+
+    .system-line {
+      text-align: center;
+      font-size: 12px;
+      color: #6b7280;
+      margin: 8px auto;
+      max-width: 70%;
+    }
+
+    .system-line time {
+      margin-left: 6px;
+      font-size: 11px;
+      opacity: 0.8;
+    }
+
+    /* 输入区 */
+    #inputArea {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 8px 10px;
+      border-top: 1px solid var(--border);
+      background: #ffffff;
+      box-shadow: 0 -2px 4px rgba(15, 23, 42, 0.06);
+    }
+
+    #emojiBar {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+    }
+
+    .emoji-btn {
+      border: none;
+      padding: 4px 6px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 18px;
+      background: #f3f4f6;
+    }
+
+    .input-main {
+      display: flex;
+      gap: 6px;
+    }
+
+    #msgInput {
+      flex: 1;
+      min-width: 0;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      padding: 8px 12px;
+      font-size: 15px;
+      outline: none;
+    }
+
+    #msgInput:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(79, 70, 229, 0.2);
+    }
+
+    #sendBtn {
+      border-radius: 999px;
+      border: none;
+      padding: 8px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      background: var(--primary);
+      color: #fff;
+      white-space: nowrap;
+    }
+
+    #sendBtn:hover {
+      background: #4338ca;
+      transform: translateY(-1px);
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.2);
+    }
+
+    .input-file {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+      font-size: 13px;
+    }
+
+    #fileInput {
+      font-size: 12px;
+    }
+
+    #sendFileBtn {
+      border-radius: 999px;
+      border: none;
+      padding: 6px 10px;
+      font-size: 13px;
+      cursor: pointer;
+      background: #e5e7eb;
+    }
+
+    @media (max-width: 800px) {
+      #topBar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .msg {
+        max-width: 82%;
+      }
+    }
+
+    /* ====== 手机端适配：让布局在小屏幕更正常 ====== */
+    @media (max-width: 768px) {
+
+      body {
+        font-size: 14px;
+      }
+
+      /* 顶部整体从左右排版改成上下排版 */
+      #topBar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 6px;
+      }
+
+      /* 左侧区域竖着排，每一项占一整行 */
+      #topBarLeft {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 4px;
+      }
+
+      /* label 改成块级，放在输入框上面 */
+      #topBarLeft label {
+        display: block;
+        margin-right: 0;
+        font-size: 12px;
+        margin-bottom: 2px;
+      }
+
+      #topBarLeft input {
+        width: 100%;
+        margin-right: 0;
+        margin-bottom: 4px;
+        padding: 6px 10px;
+        font-size: 14px;
+      }
+
+      #topBarLeft button {
+        width: 100%;
+        margin-right: 0;
+        padding: 8px 10px;
+        font-size: 14px;
+      }
+
+      /* 右侧房间信息挪到下面、文字缩小一点 */
+      #topBarRight {
+        width: 100%;
+        align-items: flex-start;
+        font-size: 12px;
+      }
+
+      /* 搜索栏也拉满宽度 */
+      #searchBar {
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+
+      #searchBar input {
+        width: 100%;
+        margin-bottom: 4px;
+      }
+
+      #searchBar button {
+        flex: 1;
+      }
+
+      /* 聊天气泡在手机上稍微放宽一点 */
+      .msg {
+        max-width: 80%;
+        font-size: 14px;
+      }
+
+      /* 底部输入区域：按钮更好点按 */
+      #inputArea {
+        padding: 8px 8px 10px;
+      }
+
+      .input-main {
+        gap: 4px;
+      }
+
+      #msgInput {
+        font-size: 14px;
+        padding: 8px 10px;
+      }
+
+      #sendBtn {
+        padding: 8px 12px;
+        font-size: 14px;
+      }
+
+      /* 文件选择区域挤一下，避免遮住太多 */
+      .input-file {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div id="topBar">
+    <div id="topBarLeft">
+      <label for="userId">用户ID：</label>
+      <input id="userId" type="text" placeholder="例如：gzy" />
+      <label for="roomId">房间ID：</label>
+      <input id="roomId" type="text" placeholder="room1" />
+      <label for="roomPassword">密码：</label>
+      <input id="roomPassword" type="password" placeholder="可留空" />
+      <label for="maxUsers">人数上限：</label>
+      <input id="maxUsers" type="number" min="0" style="width:70px" placeholder="0不限" />
+      <button id="createRoomBtn">开房间</button>
+      <button id="joinBtn">加入房间</button>
+      <button id="loadMoreBtn">加载历史</button>
+    </div>
+    <div id="topBarRight">
+      <span id="roomInfo"></span>
+      <span id="onlineInfo">当前在线：0 人</span>
+    </div>
+  </div>
+
+  <div id="searchBar">
+    <input id="searchInput" type="text" placeholder="搜索聊天记录..." />
+    <button id="searchBtn">搜索</button>
+    <button id="clearSearchBtn">清除搜索</button>
+  </div>
+
+  <div id="messages"></div>
+
+  <div id="inputArea">
+    <div id="emojiBar">
+      <button class="emoji-btn" data-emoji="😄">😄</button>
+      <button class="emoji-btn" data-emoji="😂">😂</button>
+      <button class="emoji-btn" data-emoji="❤️">❤️</button>
+      <button class="emoji-btn" data-emoji="👍">👍</button>
+      <button class="emoji-btn" data-emoji="😢">😢</button>
+    </div>
+    <div class="input-main">
+      <input type="text" id="msgInput" placeholder="说点什么..." />
+      <button id="sendBtn">发送</button>
+    </div>
+    <div class="input-file">
+      <input type="file" id="fileInput" />
+      <button id="sendFileBtn">发文件(音频/视频等)</button>
+    </div>
+  </div>
+
+  <script src="./chat.js"></script>
+</body>
+
+</html>
