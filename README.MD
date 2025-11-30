@@ -639,10 +639,8 @@ webView.addJavascriptInterface(WebAppInterface(this), "AndroidNative")
 | 进阶：聊天记录持久化 & 可追溯                  | `messages.json` 持久化 + 搜索接口                            |
 
 | 进阶：创意功能                                 | QQ 气泡样式、在线人数显示、搜索、emoji、Android 本地通知等   |
-
-## 9. 最终效果图
-
  
+
 
 
 
